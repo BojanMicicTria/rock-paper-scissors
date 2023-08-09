@@ -1,8 +1,14 @@
 let computerScore = 0
 let playerScore = 0
+let userChoice
+
+let myCountScore = document.getElementById("my-score");
+let computerCountScore = document.getElementById("computer-score");
+const cards = document.querySelectorAll("img")
+const answerDiv = document.querySelector(".answer");
 
 
-function getComputerChoice(){
+const  getComputerChoice = () => {
     let random = Math.floor(Math.random() * 3 ) + 1
 
     switch(random){
@@ -12,53 +18,66 @@ function getComputerChoice(){
     }
 }
 
-function playRound(playerSelection, computerSelection){
-    if(playerSelection === computerSelection ) return "Draw"
+const playRound = (playerSelection, computerSelection) => {
+    if(playerSelection === computerSelection ) {
+        answerDiv.innerHTML = "It's a draw!"
+    }
 
     if(computerSelection === "Paper" && playerSelection === "Scissors"){
         playerScore++
-        return "You win! Scissors beats Paper"
+        answerDiv.innerHTML = "<div>You win! Scissors beats Paper</div>"
     }
     if(computerSelection === "Rock" && playerSelection === "Paper"){
         playerScore++
-        return "You win! Paper beats Rock"
+        answerDiv.innerHTML = "<div>You win! Paper beats Rock</div>"
     }
     if(computerSelection === "Scissors" && playerSelection === "Rock"){
         playerScore++
-        return "You win! Rock beats Scissors"
+        answerDiv.innerHTML = "<div>You win! Rock beats Scissors</div>"
     }
     // computer score
     if(playerSelection === "Paper" && computerSelection === "Scissors"){
         computerScore++
-        return "You lose! Scissors beats Paper"
+        answerDiv.innerHTML = "<div>You lose! Scissors beats Paper</div>"
     }
     if(playerSelection === "Rock" && computerSelection === "Paper"){
         computerScore++
-        return "You lose! Paper beats Rock"
+        answerDiv.innerHTML = "<div>You lose! Paper beats Rock</div>"
     }
-    if(playerSelection === "Scissors" &&  computerSelection === "Rock"){
+    if(playerSelection === "Scissors" && computerSelection === "Rock"){
         computerScore++
-        return "You lose! Rock beats Scissors"
+        answerDiv.innerHTML = "<div>You lose! Rock beats Scissors</div>"
+    }
+
+    myCountScore.textContent = playerScore;
+    computerCountScore.textContent = computerScore;
+
+    if(playerScore === 5 || computerScore === 5){
+    reset()
     }
 }
 
-function game(){
-    while(true){
-        const playerSelection = prompt("Player's turn:")
-        const computerSelection = getComputerChoice()
-
-        playRound(playerSelection,computerSelection)
-        console.log(computerScore, playerScore)
-
-        if(playerScore === 5){
-            console.log("Congradulations you win!")
-            break
-        }
-        if(computerScore === 5){
-            console.log("You lost!")
-            break
-        }
-    }
+const handleClick = (event) => {
+    userChoice = event.target.id
+    playRound(userChoice, getComputerChoice())
 }
 
+const game = () => {
+    const computerSelection = getComputerChoice();
+    let playerSelection = cards
+    .forEach((card) => {
+        card.addEventListener(("click") , (event) => {
+            handleClick(event)
+            playRound(playerSelection, computerSelection)
+        })
+    })
+}
+
+const reset = () => {
+    playerScore = 0;
+    computerScore = 0;
+    myCountScore.innerText = 0
+    computerCountScore.innerText = 0
+    answerDiv.textContent = ""
+}
 game()
